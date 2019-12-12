@@ -1,0 +1,41 @@
+{
+  "name": "t3g/symfony-ldap-bundle",
+  "type": "symfony-bundle",
+  "description": "TYPO3 LDAP Bundle",
+  "keywords": [
+    "TYPO3",
+    "LDAP"
+  ],
+  "homepage": "http://www.typo3.com",
+  "license": "MIT",
+  "minimum-stability": "dev",
+  "authors": [
+    {
+      "name": "Jurian Janssen",
+      "email": "jurian.janssen@typo3.com"
+    }
+  ],
+  "require": {
+    "php": "^7.2",
+    "symfony/framework-bundle": "^4.3",
+    "symfony/http-kernel": "^4.3",
+    "symfony/ldap": "^4.3",
+    "symfony/security-bundle": "^4.3"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^2.2"
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "autoload": {
+    "psr-4": {
+      "T3G\\Bundle\\LdapBundle\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "T3G\\Bundle\\LdapBundle\\Tests\\": "tests/"
+    }
+  }
+}
