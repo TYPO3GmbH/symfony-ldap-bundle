@@ -16,7 +16,6 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
-use T3G\Bundle\LdapBundle\Entity\User;
 
 class LdapUserProvider implements UserProviderInterface
 {
@@ -132,11 +131,11 @@ class LdapUserProvider implements UserProviderInterface
      */
     public function refreshUser(UserInterface $user)
     {
-        if (!$user instanceof User) {
+        if (!$user instanceof $this->userClass) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
 
-        return new User($user->getUsername(), null, $user->getDisplayName(), $user->getRoles());
+        return new $this->userClass($user->getUsername(), null, $user->getDisplayName(), $user->getRoles());
     }
 
     /**
