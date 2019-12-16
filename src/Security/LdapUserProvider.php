@@ -30,6 +30,7 @@ class LdapUserProvider implements UserProviderInterface
     private $searchPassword;
     private $defaultRoles;
     private $defaultSearch;
+    private $userClass;
 
     /**
      * Map ldap isMemberOf attributes to roles
@@ -51,7 +52,8 @@ class LdapUserProvider implements UserProviderInterface
         string $searchDn,
         string $searchPassword,
         array $defaultRoles,
-        array $roleMapping
+        array $roleMapping,
+        string $userClass
     ) {
         $this->ldap = $ldap;
         $this->baseDn = $basedn;
@@ -60,6 +62,7 @@ class LdapUserProvider implements UserProviderInterface
         $this->defaultRoles = $defaultRoles;
         $this->defaultSearch = '(uid={username})';
         $this->roleMapping = $roleMapping;
+        $this->userClass = $userClass;
     }
 
     /**
@@ -89,7 +92,7 @@ class LdapUserProvider implements UserProviderInterface
             throw new UsernameNotFoundException('Not a member of TYPO3 GmbH');
         }
 
-        return new User($username, null, $displayName, $roles);
+        return new $this->userClass($username, null, $displayName, $roles);
     }
 
     /**

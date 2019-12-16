@@ -28,6 +28,7 @@ services:
       $searchPassword: '%t3g.ldap.config.ldap_search_password%'
       $defaultRoles: '%t3g.ldap.config.ldap_default_roles%'
       $roleMapping: '%t3g.ldap.config.ldap_role_mapping%'
+      $userClass: '%t3g.ldap.config.ldap_user_class%'
 
   T3G\Bundle\LdapBundle\Security\AuthenticationSuccessHandler:
     class: T3G\Bundle\LdapBundle\Security\AuthenticationSuccessHandler

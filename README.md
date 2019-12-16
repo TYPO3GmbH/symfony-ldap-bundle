@@ -22,6 +22,7 @@ ldap:
     ldap_base_dn: 'ou=people,dc=typo3,dc=org'
     ldap_encryption: 'ssl'
     ldap_version: 3
+    user_class: T3G\Bundle\LdapBundle\Entity\User # Must implement Symfony\Component\Security\Core\User\UserInterface
     ldap_default_roles: ['ROLE_USER']
     ldap_role_mapping: 
         typo3.com-gmbh: 'ROLE_ADMIN'

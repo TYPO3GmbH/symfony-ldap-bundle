@@ -11,6 +11,7 @@ namespace T3G\Bundle\LdapBundle\DependencyInjection;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use T3G\Bundle\LdapBundle\Entity\User;
 
 class Configuration implements ConfigurationInterface
 {
@@ -45,6 +46,10 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->scalarNode('ldap_version')
             ->defaultValue(3)
+            ->cannotBeEmpty()
+            ->end()
+            ->scalarNode('ldap_user_class')
+            ->defaultValue(User::class)
             ->cannotBeEmpty()
             ->end()
             ->arrayNode('ldap_default_roles')

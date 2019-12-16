@@ -29,6 +29,7 @@ class LdapExtension extends Extension
         $container->setParameter('t3g.ldap.config.ldap_search_password', $config['ldap_search_password']);
         $container->setParameter('t3g.ldap.config.ldap_default_roles', $config['ldap_default_roles']);
         $container->setParameter('t3g.ldap.config.ldap_role_mapping', $config['ldap_role_mapping']);
+        $container->setParameter('t3g.ldap.config.ldap_user_class', $config['ldap_user_class']);
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yaml');
     }
