@@ -13,19 +13,24 @@ composer require t3g/symfony-ldap-bundle
 # This is the default configuration already shipped with the package
 # You may override any values yourself
 ldap:
-    ldap_host: 'ldap.typo3.org'
-    ldap_port: 636
     # REQUIRED: Override this variable from your .env file
     ldap_search_user: 'uid=foo,dc=example,dc=com'
     # REQUIRED: Override this variable from your .env file
     ldap_search_password: 'bar'
+
+    # Array of Symfony role strings
+    ldap_default_roles: ['ROLE_USER']
+    # Key: LDAP role string. Value: Symfony role string.
+    ldap_role_mapping: 
+        typo3.com-gmbh: 'ROLE_ADMIN'
+
+    # Default typo3.org LDAP configuration
+    ldap_host: 'ldap.typo3.org'
+    ldap_port: 636
     ldap_base_dn: 'ou=people,dc=typo3,dc=org'
     ldap_encryption: 'ssl'
     ldap_version: 3
     user_class: T3G\Bundle\LdapBundle\Entity\User # Must implement Symfony\Component\Security\Core\User\UserInterface
-    ldap_default_roles: ['ROLE_USER']
-    ldap_role_mapping: 
-        typo3.com-gmbh: 'ROLE_ADMIN'
 ```
 
 ```yaml
