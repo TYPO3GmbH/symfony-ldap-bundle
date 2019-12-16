@@ -87,8 +87,8 @@ class LdapUserProvider implements UserProviderInterface
         $hasRoles = array_intersect_key($this->roleMapping, array_flip($isMemberOfValues));
         $roles = array_merge($this->defaultRoles, $hasRoles);
 
-        if (!in_array('ROLE_ADMIN', $roles, true)) {
-            throw new UsernameNotFoundException('Not a member of TYPO3 GmbH');
+        if (count($roles) === 0) {
+            throw new UsernameNotFoundException('You do not have permission to use this application');
         }
 
         return new $this->userClass($username, null, $displayName, $roles);
