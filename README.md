@@ -10,12 +10,14 @@ composer require t3g/symfony-ldap-bundle
 
 ```yaml
 # config/packages/ldap.yaml
+# This is the default configuration already shipped with the package
+# You may override any values yourself
 ldap:
     ldap_host: 'ldap.typo3.org'
     ldap_port: 636
-    # Override this variable from your .env file
+    # REQUIRED: Override this variable from your .env file
     ldap_search_user: 'uid=foo,dc=example,dc=com'
-    # Override this variable from your .env file
+    # REQUIRED: Override this variable from your .env file
     ldap_search_password: 'bar'
     ldap_base_dn: 'ou=people,dc=typo3,dc=org'
     ldap_encryption: 'ssl'
