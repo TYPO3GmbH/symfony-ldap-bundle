@@ -18,6 +18,7 @@
   "require": {
     "php": "^7.2",
     "symfony/framework-bundle": "^4.3",
+    "symfony/http-foundation": "^4.3",
     "symfony/http-kernel": "^4.3",
     "symfony/ldap": "^4.3",
     "symfony/security-bundle": "^4.3"

@@ -24,3 +24,30 @@ ldap:
     ldap_role_mapping: 
         typo3.com-gmbh: 'ROLE_ADMIN'
 ```
+
+```yaml
+# config/packages/security.yaml
+security:
+    providers:
+        typo3_org_ldap:
+            id: ldap.typo3.org.user.provider
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: true
+            form_login_ldap:
+                login_path: login # Set your own login path here
+                check_path: login # Set your own login path here
+                csrf_token_generator: security.csrf.token_manager
+                service: Symfony\Component\Ldap\Ldap
+                dn_string: 'ou=people,dc=typo3,dc=org'
+                query_string: '(&(objectClass=inetOrgPerson)(uid={username}))'
+                search_dn: '%env(LDAP_SEARCH_USER)%'
+                search_password: '%env(LDAP_SEARCH_PASSWORD)%'
+                success_handler: T3G\Bundle\LdapBundle\Security\AuthenticationSuccessHandler
+            logout:
+                path: /logout # Set your own logout path here
+                target: home # Set your own logout redirect route path here
+```

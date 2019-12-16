@@ -20,6 +20,7 @@ services:
   # Our custom user provider to ldap.typo3.org
   ldap.typo3.org.user.provider:
     class: T3G\Bundle\LdapBundle\Security\LdapUserProvider
+
     arguments:
       $ldap: '@Symfony\Component\Ldap\Ldap'
       $basedn: '%t3g.ldap.config.ldap_base_dn%'
@@ -27,3 +28,6 @@ services:
       $searchPassword: '%t3g.ldap.config.ldap_search_password%'
       $defaultRoles: '%t3g.ldap.config.ldap_default_roles%'
       $roleMapping: '%t3g.ldap.config.ldap_role_mapping%'
+
+  T3G\Bundle\LdapBundle\Security\AuthenticationSuccessHandler:
+    class: T3G\Bundle\LdapBundle\Security\AuthenticationSuccessHandler
