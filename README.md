@@ -44,8 +44,8 @@ security:
                 service: Symfony\Component\Ldap\Ldap
                 dn_string: 'ou=people,dc=typo3,dc=org'
                 query_string: '(&(objectClass=inetOrgPerson)(uid={username}))'
-                search_dn: '%env(LDAP_SEARCH_USER)%'
-                search_password: '%env(LDAP_SEARCH_PASSWORD)%'
+                search_dn: '%env(LDAP_SEARCH_USER)%' # set to the same value as ldap_search_user in your ldap.yaml
+                search_password: '%env(LDAP_SEARCH_PASSWORD)%' # set to the same value as ldap_search_password in your ldap.yaml
                 success_handler: T3G\Bundle\LdapBundle\Security\AuthenticationSuccessHandler
             logout:
                 path: /logout # Set your own logout path here
