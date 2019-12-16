@@ -23,17 +23,31 @@ class LdapUserProvider implements UserProviderInterface
      * @var LdapInterface
      */
     private $ldap;
-
-    private $baseDn;
-    private $searchDn;
-    private $searchPassword;
-    private $defaultRoles;
-    private $defaultSearch;
-    private $userClass;
-
     /**
-     * Map ldap isMemberOf attributes to roles
-     *
+     * @var string
+     */
+    private $baseDn;
+    /**
+     * @var string
+     */
+    private $searchDn;
+    /**
+     * @var string
+     */
+    private $searchPassword;
+    /**
+     * @var array
+     */
+    private $defaultRoles;
+    /**
+     * @var string
+     */
+    private $defaultSearch;
+    /**
+     * @var string
+     */
+    private $userClass;
+    /**
      * @var array
      */
     private $roleMapping;
@@ -44,6 +58,8 @@ class LdapUserProvider implements UserProviderInterface
      * @param string $searchDn
      * @param string $searchPassword
      * @param array $defaultRoles
+     * @param array $roleMapping
+     * @param string $userClass
      */
     public function __construct(
         LdapInterface $ldap,
@@ -70,7 +86,7 @@ class LdapUserProvider implements UserProviderInterface
      *
      * @param string $username
      * @param Entry $entry
-     * @return User
+     * @return UserInterface
      */
     protected function loadUser($username, Entry $entry): UserInterface
     {
