@@ -34,9 +34,9 @@ security:
         typo3_org_ldap:
             id: ldap.typo3.org.user.provider
     firewalls:
-        dev:
-            pattern: ^/(_(profiler|wdt)|css|images|js)/
-            security: false
+
+        # ...
+
         main:
             anonymous: true
             form_login_ldap:
