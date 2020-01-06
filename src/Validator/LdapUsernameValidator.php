@@ -8,10 +8,10 @@
 
 namespace T3G\Bundle\LdapBundle\Validator;
 
-use T3G\Bundle\LdapBundle\Service\LdapService;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use T3G\Bundle\LdapBundle\Service\LdapService;
 
 class LdapUsernameValidator extends ConstraintValidator
 {
