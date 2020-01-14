@@ -208,7 +208,15 @@ class LdapUserProvider implements UserProviderInterface
      */
     public function supportsClass($class)
     {
-        return LdapUser::class === $class;
+        if (LdapUser::class === $class) {
+            return true;
+        }
+
+        if (in_array(LdapUser::class, class_parents($class), true)) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
