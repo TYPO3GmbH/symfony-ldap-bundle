@@ -121,7 +121,7 @@ class LdapUserProvider implements UserProviderInterface
             $roles
         );
 
-        if (!$this->supportsClass($user)) {
+        if (!$this->supportsClass(get_class($user))) {
             throw new \RuntimeException('Userclass must be of type ' . LdapUser::class . ' or a child class.');
         }
 
@@ -184,7 +184,7 @@ class LdapUserProvider implements UserProviderInterface
      */
     public function refreshUser(UserInterface $user)
     {
-        if (!$this->supportsClass($user)) {
+        if (!$this->supportsClass(get_class($user))) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
 
@@ -200,7 +200,7 @@ class LdapUserProvider implements UserProviderInterface
      */
     public function supportsClass($class)
     {
-        return $class instanceof LdapUser;
+        return LdapUser::class === $class;
     }
 
     /**
