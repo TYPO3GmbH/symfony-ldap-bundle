@@ -56,7 +56,7 @@ class LdapUserProvider implements UserProviderInterface
 
     /**
      * @param LdapInterface $ldap
-     * @param string $baseDn
+     * @param string $basedn
      * @param string $searchDn
      * @param string $searchPassword
      * @param array $defaultRoles
