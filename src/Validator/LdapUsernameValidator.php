@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace T3G\Bundle\LdapBundle\Validator\Constraint;
 
+use Symfony\Component\Ldap\Exception\ConnectionException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
@@ -46,6 +47,9 @@ class LdapUsernameValidator extends ConstraintValidator
         } catch (UsernameNotFoundException $e) {
             $this->context->buildViolation($constraint->message)
                 ->setParameter('{{ value }}', $value)
+                ->addViolation();
+        } catch (ConnectionException $e) {
+            $this->context->buildViolation('There was an issue contacting the LDAP server.')
                 ->addViolation();
         }
     }

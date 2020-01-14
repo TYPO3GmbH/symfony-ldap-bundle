@@ -10,7 +10,6 @@ declare(strict_types=1);
 namespace T3G\Bundle\LdapBundle\Service;
 
 use Symfony\Component\Ldap\Entry;
-use Symfony\Component\Ldap\Exception\ConnectionException;
 use Symfony\Component\Ldap\LdapInterface;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 
@@ -58,17 +57,14 @@ class LdapService
      * @param string $username
      * @return Entry
      * @throws UsernameNotFoundException
+     * @trows ConnectionException
      */
     public function findUserByName(string $username): Entry
     {
-        try {
-            $this->ldap->bind($this->searchDn, $this->searchPassword);
-            $username = $this->ldap->escape($username, '', LdapInterface::ESCAPE_FILTER);
-            $query = str_replace('{username}', $username, '(uid={username})');
-            $search = $this->ldap->query($this->baseDn, $query);
-        } catch (ConnectionException $e) {
-            throw new UsernameNotFoundException(sprintf('User "%s" not found.', $username), 0, $e);
-        }
+        $this->ldap->bind($this->searchDn, $this->searchPassword);
+        $username = $this->ldap->escape($username, '', LdapInterface::ESCAPE_FILTER);
+        $query = str_replace('{username}', $username, '(uid={username})');
+        $search = $this->ldap->query($this->baseDn, $query);
 
         $entries = $search->execute();
         $count = \count($entries);
