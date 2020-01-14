@@ -187,6 +187,7 @@ class LdapUserProvider implements UserProviderInterface
         if (!$this->supportsClass(get_class($user))) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
+        /** @var LdapUser $user */
 
         return new $this->userClass($user->getUsername(), $user->getDisplayName(), $user->getRoles());
     }

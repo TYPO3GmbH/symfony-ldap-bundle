@@ -16,9 +16,11 @@ use Symfony\Component\Validator\Constraint;
  */
 class LdapUsername extends Constraint
 {
-    /*
+    /**
      * Any public properties become valid options for the annotation.
      * Then, use these in your validator class.
+     *
+     * @var string
      */
     public $message = '"{{ value }}" is not a valid user in the TYPO3.org LDAP directory.';
 }
