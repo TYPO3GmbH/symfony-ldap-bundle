@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 /*
  * This file is part of the package t3g/symfony-ldap-bundle.
@@ -32,14 +31,14 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
     /**
      * @param HttpUtils $httpUtils
      * @param array $options
-     * @param FlashBagInterface|null $flashBag
-     * @param LoggerInterface|null $logger
+     * @param FlashBagInterface $flashBag
+     * @param LoggerInterface $logger
      */
     public function __construct(
         HttpUtils $httpUtils,
         array $options = [],
-        FlashBagInterface $flashBag = null,
-        LoggerInterface $logger = null
+        FlashBagInterface $flashBag,
+        LoggerInterface $logger
     ) {
         parent::__construct($httpUtils, $options);
         $this->flashBag = $flashBag;
@@ -51,7 +50,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      * @param TokenInterface $token
      * @return Response
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token): Response
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token)
     {
         $this->logger->info(
             'User login succesful, username: "' . $token->getUsername() . '"',
