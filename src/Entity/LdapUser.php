@@ -10,10 +10,16 @@ namespace T3G\Bundle\LdapBundle\Entity;
 
 use Symfony\Component\Security\Core\User\UserInterface;
 
-class User implements UserInterface
+class LdapUser implements UserInterface
 {
+    /**
+     * @var string
+     */
     private $username;
-    private $password;
+
+    /**
+     * @var array
+     */
     private $roles;
 
     /**
@@ -22,16 +28,11 @@ class User implements UserInterface
     private $displayName;
 
     public function __construct(
-        ?string $username,
-        ?string $password,
+        string $username,
         ?string $displayName,
         array $roles = []
     ) {
-        if ('' === $username || null === $username) {
-            throw new \InvalidArgumentException('The username cannot be empty.');
-        }
         $this->username = $username;
-        $this->password = $password;
         $this->displayName = $displayName;
         $this->roles = $roles;
     }
@@ -54,7 +55,7 @@ class User implements UserInterface
      */
     public function getPassword()
     {
-        return $this->password;
+        return null;
     }
 
     /**

@@ -16,6 +16,7 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\UserProviderInterface;
+use T3G\Bundle\LdapBundle\Entity\LdapUser;
 
 class LdapUserProvider implements UserProviderInterface
 {
@@ -90,7 +91,8 @@ class LdapUserProvider implements UserProviderInterface
      */
     protected function loadUser($username, Entry $entry): UserInterface
     {
-        $displayName = '';
+        $displayName = null;
+        $uid = $this->getAttributeValue($entry, 'uid');
         if ($entry->hasAttribute('displayName')) {
             $displayName = $this->getAttributeValue($entry, 'displayName');
         }
@@ -106,6 +108,17 @@ class LdapUserProvider implements UserProviderInterface
         if (count($roles) === 0) {
             throw new UsernameNotFoundException('You do not have permission to use this application');
         }
+
+        if (!new $this->userClass() instanceof LdapUser) {
+            throw new \RuntimeException('Userclass must be of type ' . LdapUser::class . ' or a child class.');
+        }
+
+        /** @var LdapUser $user */
+        $user = new $this->userClass(
+            $this->getAttributeValue($entry, 'uid'),
+            $displayName ?? $uid,
+            $roles
+        );
 
         return new $this->userClass($username, null, $displayName, $roles);
     }
