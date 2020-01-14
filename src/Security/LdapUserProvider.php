@@ -25,30 +25,37 @@ class LdapUserProvider implements UserProviderInterface
      * @var LdapInterface
      */
     private $ldap;
+
     /**
      * @var string
      */
     private $baseDn;
+
     /**
      * @var string
      */
     private $searchDn;
+
     /**
      * @var string
      */
     private $searchPassword;
+
     /**
      * @var array
      */
     private $defaultRoles;
+
     /**
      * @var string
      */
     private $defaultSearch;
+
     /**
      * @var string
      */
     private $userClass;
+
     /**
      * @var array
      */
