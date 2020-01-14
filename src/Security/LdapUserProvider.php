@@ -109,16 +109,16 @@ class LdapUserProvider implements UserProviderInterface
             throw new UsernameNotFoundException('You do not have permission to use this application');
         }
 
-        if (!$this->supportsClass(new $this->userClass())) {
-            throw new \RuntimeException('Userclass must be of type ' . LdapUser::class . ' or a child class.');
-        }
-
         /** @var LdapUser $user */
         $user = new $this->userClass(
             $this->getAttributeValue($entry, 'uid'),
             $displayName ?? $uid,
             $roles
         );
+
+        if (!$this->supportsClass($user)) {
+            throw new \RuntimeException('Userclass must be of type ' . LdapUser::class . ' or a child class.');
+        }
 
         return $user;
     }
