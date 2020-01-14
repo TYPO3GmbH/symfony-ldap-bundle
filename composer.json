@@ -8,7 +8,7 @@
   ],
   "homepage": "http://www.typo3.com",
   "license": "MIT",
-  "minimum-stability": "dev",
+  "minimum-stability": "stable",
   "authors": [
     {
       "name": "Jurian Janssen",
@@ -17,18 +17,26 @@
   ],
   "require": {
     "php": "^7.2",
+    "psr/log": "^1.1",
+    "symfony/config": "^4.3",
+    "symfony/dependency-injection": "^4.3",
     "symfony/framework-bundle": "^4.3",
     "symfony/http-foundation": "^4.3",
     "symfony/http-kernel": "^4.3",
     "symfony/ldap": "^4.3",
     "symfony/security-bundle": "^4.3",
+    "symfony/security-core": "^4.3",
+    "symfony/security-http": "^4.3",
     "symfony/validator": "^4.3"
   },
   "require-dev": {
     "friendsofphp/php-cs-fixer": "^2.2"
   },
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "platform": {
+      "php": "7.2.0"
+    }
   },
   "autoload": {
     "psr-4": {

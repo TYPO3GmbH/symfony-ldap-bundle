@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /*
  * This file is part of the package t3g/symfony-ldap-bundle.
@@ -36,11 +37,10 @@ class LdapService
     private $baseDn;
 
     /**
-     * LdapService constructor.
      * @param LdapInterface $ldap
      * @param string $baseDn
-     * @param string|null $searchDn
-     * @param string|null $searchPassword
+     * @param string $searchDn
+     * @param string $searchPassword
      */
     public function __construct(
         LdapInterface $ldap,
@@ -73,7 +73,7 @@ class LdapService
         $entries = $search->execute();
         $count = \count($entries);
 
-        if (!$count) {
+        if ($count === 0) {
             throw new UsernameNotFoundException(sprintf('User "%s" not found.', $username));
         }
 

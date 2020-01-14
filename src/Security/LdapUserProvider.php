@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /*
  * This file is part of the package t3g/symfony-ldap-bundle.
@@ -98,7 +99,11 @@ class LdapUserProvider implements UserProviderInterface
         }
         if (!$entry->hasAttribute('isMemberOf')) {
             // If user does not have this attribute at all, he's just ROLE_USER
-            return new User($username, null, $displayName, $this->defaultRoles);
+            return new $this->userClass(
+                $this->getAttributeValue($entry, 'uid'),
+                $displayName ?? $uid,
+                $this->defaultRoles
+            );
         }
         // If user has attribute, assign roles that map
         $isMemberOfValues = $entry->getAttribute('isMemberOf');
@@ -140,7 +145,7 @@ class LdapUserProvider implements UserProviderInterface
         $entries = $search->execute();
         $count = \count($entries);
 
-        if (!$count) {
+        if ($count === 0) {
             throw new UsernameNotFoundException(sprintf('User "%s" not found.', $username));
         }
 
@@ -178,7 +183,7 @@ class LdapUserProvider implements UserProviderInterface
     /**
      * Fetches a required unique attribute value from an LDAP entry.
      *
-     * @param Entry|null $entry
+     * @param Entry $entry
      * @param string $attribute
      * @return mixed
      */
@@ -188,9 +193,9 @@ class LdapUserProvider implements UserProviderInterface
             throw new InvalidArgumentException(sprintf('Missing attribute "%s" for user "%s".', $attribute, $entry->getDn()));
         }
 
-        $values = $entry->getAttribute($attribute);
+        $values = $entry->getAttribute($attribute) ?? 0;
 
-        if (1 !== \count($values)) {
+        if (1 !== count($values)) {
             throw new InvalidArgumentException(sprintf('Attribute "%s" has multiple values.', $attribute));
         }
 

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /*
  * This file is part of the package t3g/symfony-ldap-bundle.
@@ -23,7 +24,7 @@ class LdapUser implements UserInterface
     private $roles;
 
     /**
-     * @var string Attribute 'displayName' from LDAP
+     * @var string|null Attribute 'displayName' from LDAP
      */
     private $displayName;
 
@@ -76,9 +77,9 @@ class LdapUser implements UserInterface
     /**
      * Attribute 'displayName' from LDAP
      *
-     * @return string
+     * @return string|null
      */
-    public function getDisplayName(): string
+    public function getDisplayName(): ?string
     {
         return $this->displayName;
     }

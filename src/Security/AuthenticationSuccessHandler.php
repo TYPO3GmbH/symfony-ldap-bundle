@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /*
  * This file is part of the package t3g/symfony-ldap-bundle.
@@ -50,7 +51,7 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler
      * @param TokenInterface $token
      * @return Response
      */
-    public function onAuthenticationSuccess(Request $request, TokenInterface $token)
+    public function onAuthenticationSuccess(Request $request, TokenInterface $token): Response
     {
         $this->logger->info(
             'User login succesful, username: "' . $token->getUsername() . '"',
