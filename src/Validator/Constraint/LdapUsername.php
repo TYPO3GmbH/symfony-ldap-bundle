@@ -7,7 +7,7 @@ declare(strict_types=1);
  * LICENSE file that was distributed with this source code.
  */
 
-namespace T3G\Bundle\LdapBundle\Validator;
+namespace T3G\Bundle\LdapBundle\Validator\Constraint;
 
 use Symfony\Component\Validator\Constraint;
 

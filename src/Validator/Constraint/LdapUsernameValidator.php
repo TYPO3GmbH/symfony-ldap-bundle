@@ -16,7 +16,6 @@ use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Exception\UnexpectedValueException;
 use T3G\Bundle\LdapBundle\Service\LdapService;
-use T3G\Bundle\LdapBundle\Validator\LdapUsername;
 
 class LdapUsernameValidator extends ConstraintValidator
 {
