@@ -109,7 +109,7 @@ class LdapUserProvider implements UserProviderInterface
             throw new UsernameNotFoundException('You do not have permission to use this application');
         }
 
-        if (!new $this->userClass() instanceof LdapUser) {
+        if (!$this->supportsClass(new $this->userClass())) {
             throw new \RuntimeException('Userclass must be of type ' . LdapUser::class . ' or a child class.');
         }
 
@@ -160,7 +160,7 @@ class LdapUserProvider implements UserProviderInterface
      */
     public function refreshUser(UserInterface $user)
     {
-        if (!$user instanceof $this->userClass) {
+        if (!$this->supportsClass($user)) {
             throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
 
@@ -172,7 +172,7 @@ class LdapUserProvider implements UserProviderInterface
      */
     public function supportsClass($class)
     {
-        return $class instanceof UserInterface;
+        return $class instanceof LdapUser;
     }
 
     /**
