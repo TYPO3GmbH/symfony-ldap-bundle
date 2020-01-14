@@ -73,11 +73,11 @@ class LdapService
         $entries = $search->execute();
         $count = \count($entries);
 
-        if ($count === 0) {
+        if (0 === $count) {
             throw new UsernameNotFoundException(sprintf('User "%s" not found.', $username));
         }
 
-        if ($count > 1) {
+        if (1 < $count) {
             throw new UsernameNotFoundException('More than one user found');
         }
 

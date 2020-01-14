@@ -110,7 +110,7 @@ class LdapUserProvider implements UserProviderInterface
         $hasRoles = array_intersect_key($this->roleMapping, array_flip($isMemberOfValues));
         $roles = array_merge($this->defaultRoles, $hasRoles);
 
-        if (count($roles) === 0) {
+        if (0 === count($roles)) {
             throw new UsernameNotFoundException('You do not have permission to use this application');
         }
 
@@ -145,11 +145,11 @@ class LdapUserProvider implements UserProviderInterface
         $entries = $search->execute();
         $count = \count($entries);
 
-        if ($count === 0) {
+        if (0 === $count) {
             throw new UsernameNotFoundException(sprintf('User "%s" not found.', $username));
         }
 
-        if ($count > 1) {
+        if (1 < $count) {
             throw new UsernameNotFoundException('More than one user found');
         }
 
