@@ -10,83 +10,29 @@ declare(strict_types=1);
 namespace T3G\Bundle\LdapBundle\Security;
 
 use Symfony\Component\Ldap\Entry;
-use Symfony\Component\Ldap\Exception\ConnectionException;
 use Symfony\Component\Ldap\LdapInterface;
+use Symfony\Component\Ldap\Security\LdapUser;
+use Symfony\Component\Ldap\Security\LdapUserProvider as SymfonyLdapUserProvider;
 use Symfony\Component\Security\Core\Exception\InvalidArgumentException;
-use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
-use T3G\Bundle\LdapBundle\Entity\LdapUser;
 
-class LdapUserProvider implements UserProviderInterface
+class LdapUserProvider extends SymfonyLdapUserProvider
 {
-    /**
-     * @var LdapInterface
-     */
-    private $ldap;
-
-    /**
-     * @var string
-     */
-    private $baseDn;
-
-    /**
-     * @var string
-     */
-    private $searchDn;
-
-    /**
-     * @var string
-     */
-    private $searchPassword;
-
-    /**
-     * @var array
-     */
-    private $defaultRoles;
-
-    /**
-     * @var string
-     */
-    private $defaultSearch;
-
-    /**
-     * @var string
-     */
-    private $userClass;
-
     /**
      * @var array
      */
     private $roleMapping;
 
     /**
-     * @param LdapInterface $ldap
-     * @param string $basedn
-     * @param string $searchDn
-     * @param string $searchPassword
-     * @param array $defaultRoles
-     * @param array $roleMapping
-     * @param string $userClass
+     * @var array
      */
-    public function __construct(
-        LdapInterface $ldap,
-        string $basedn,
-        string $searchDn,
-        string $searchPassword,
-        array $defaultRoles,
-        array $roleMapping,
-        string $userClass
-    ) {
-        $this->ldap = $ldap;
-        $this->baseDn = $basedn;
-        $this->searchDn = $searchDn;
-        $this->searchPassword = $searchPassword;
-        $this->defaultRoles = $defaultRoles;
-        $this->defaultSearch = '(uid={username})';
+    private $defaults;
+
+    public function __construct(LdapInterface $ldap, string $baseDn, string $searchDn = null, string $searchPassword = null, array $defaultRoles = [], string $uidKey = null, string $filter = null, string $passwordAttribute = null, array $extraFields = [], array $roleMapping = [])
+    {
+        parent::__construct($ldap, $baseDn, $searchDn, $searchPassword, $defaultRoles, $uidKey, $filter, $passwordAttribute, $extraFields);
         $this->roleMapping = $roleMapping;
-        $this->userClass = $userClass;
+        $this->defaults = $defaultRoles;
     }
 
     /**
@@ -95,36 +41,33 @@ class LdapUserProvider implements UserProviderInterface
      *
      * @param string $username
      * @param Entry $entry
-     * @return UserInterface
+     * @return LdapUser
      */
-    protected function loadUser($username, Entry $entry): UserInterface
+    protected function loadUser($username, Entry $entry): LdapUser
     {
-        $displayName = null;
         $uid = $this->getAttributeValue($entry, 'uid');
-        if ($entry->hasAttribute('displayName')) {
-            $displayName = $this->getAttributeValue($entry, 'displayName');
-        }
         if (!$entry->hasAttribute('isMemberOf')) {
-            // If user does not have this attribute at all, he's just ROLE_USER
-            return new $this->userClass(
-                $this->getAttributeValue($entry, 'uid'),
-                $displayName ?? $uid,
-                $this->defaultRoles
+            return new LdapUser(
+                $entry,
+                $uid,
+                null,
+                $this->defaults
             );
         }
-        // If user has attribute, assign roles that map
+
         $isMemberOfValues = $entry->getAttribute('isMemberOf') ?? [];
         $hasRoles = array_intersect_key($this->roleMapping, array_flip($isMemberOfValues));
-        $roles = array_merge($this->defaultRoles, $hasRoles);
+        $roles = array_merge($this->defaults, $hasRoles);
 
         if (0 === count($roles)) {
             throw new UsernameNotFoundException('You do not have permission to use this application');
         }
 
         /** @var LdapUser $user */
-        $user = new $this->userClass(
-            $this->getAttributeValue($entry, 'uid'),
-            $displayName ?? $uid,
+        $user = new LdapUser(
+            $entry,
+            $uid,
+            null,
             $roles
         );
 
@@ -133,90 +76,6 @@ class LdapUserProvider implements UserProviderInterface
         }
 
         return $user;
-    }
-
-    /**
-     * Loads the user for the given username.
-     *
-     * This method must throw UsernameNotFoundException if the user is not
-     * found.
-     *
-     * @param string $username The username
-     *
-     * @return UserInterface
-     *
-     * @throws UsernameNotFoundException if the user is not found
-     */
-    public function loadUserByUsername($username)
-    {
-        try {
-            $this->ldap->bind($this->searchDn, $this->searchPassword);
-            $username = $this->ldap->escape($username, '', LdapInterface::ESCAPE_FILTER);
-            $query = str_replace('{username}', $username, $this->defaultSearch);
-            $search = $this->ldap->query($this->baseDn, $query);
-        } catch (ConnectionException $e) {
-            throw new UsernameNotFoundException(sprintf('User "%s" not found.', $username), 0, $e);
-        }
-
-        $entries = $search->execute();
-        $count = \count($entries);
-
-        if (0 === $count) {
-            throw new UsernameNotFoundException(sprintf('User "%s" not found.', $username));
-        }
-
-        if (1 < $count) {
-            throw new UsernameNotFoundException('More than one user found');
-        }
-
-        $entry = $entries[0];
-
-        $username = $this->getAttributeValue($entry, 'uid');
-
-        return $this->loadUser($username, $entry);
-    }
-
-    /**
-     * Refreshes the user.
-     *
-     * It is up to the implementation to decide if the user data should be
-     * totally reloaded (e.g. from the database), or if the UserInterface
-     * object can just be merged into some internal array of users / identity
-     * map.
-     *
-     * @return UserInterface
-     *
-     * @throws UnsupportedUserException  if the user is not supported
-     * @throws UsernameNotFoundException if the user is not found
-     */
-    public function refreshUser(UserInterface $user)
-    {
-        if (!$this->supportsClass(get_class($user))) {
-            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
-        }
-        /** @var LdapUser $user */
-
-        return new $this->userClass($user->getUsername(), $user->getDisplayName(), $user->getRoles());
-    }
-
-    /**
-     * Whether this provider supports the given user class.
-     *
-     * @param string $class
-     *
-     * @return bool
-     */
-    public function supportsClass($class)
-    {
-        if (LdapUser::class === $class) {
-            return true;
-        }
-
-        if (in_array(LdapUser::class, class_parents($class), true)) {
-            return true;
-        }
-
-        return false;
     }
 
     /**
