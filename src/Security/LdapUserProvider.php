@@ -106,7 +106,7 @@ class LdapUserProvider implements UserProviderInterface
             );
         }
         // If user has attribute, assign roles that map
-        $isMemberOfValues = $entry->getAttribute('isMemberOf');
+        $isMemberOfValues = $entry->getAttribute('isMemberOf') ?? [];
         $hasRoles = array_intersect_key($this->roleMapping, array_flip($isMemberOfValues));
         $roles = array_merge($this->defaultRoles, $hasRoles);
 
@@ -216,7 +216,7 @@ class LdapUserProvider implements UserProviderInterface
             throw new InvalidArgumentException(sprintf('Missing attribute "%s" for user "%s".', $attribute, $entry->getDn()));
         }
 
-        $values = $entry->getAttribute($attribute) ?? 0;
+        $values = $entry->getAttribute($attribute) ?? [];
 
         if (1 !== count($values)) {
             throw new InvalidArgumentException(sprintf('Attribute "%s" has multiple values.', $attribute));
