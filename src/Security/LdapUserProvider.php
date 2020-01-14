@@ -120,7 +120,7 @@ class LdapUserProvider implements UserProviderInterface
             $roles
         );
 
-        return new $this->userClass($username, null, $displayName, $roles);
+        return $user;
     }
 
     /**
