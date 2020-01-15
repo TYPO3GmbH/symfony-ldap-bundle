@@ -20,7 +20,7 @@ services:
 
   # Our custom user provider to ldap.typo3.org
   ldap.typo3.org.user.provider:
-    class: T3G\Bundle\LdapBundle\Security\LdapUserProvider
+    class: '%t3g.ldap.config.ldap_user_provider_class%'
     arguments:
       $ldap: '@Symfony\Component\Ldap\Ldap'
       $baseDn: '%t3g.ldap.config.ldap_base_dn%'
