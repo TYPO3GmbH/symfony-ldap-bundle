@@ -1,0 +1,43 @@
+parameters:
+
+services:
+  _defaults:
+    public: false
+    autowire: true
+    autoconfigure: true
+
+  # LDAP connection for user authentication
+  Symfony\Component\Ldap\Ldap:
+    arguments: ['@Symfony\Component\Ldap\Adapter\ExtLdap\Adapter']
+  Symfony\Component\Ldap\Adapter\ExtLdap\Adapter:
+    arguments:
+      - host: '%t3g.ldap.config.ldap_host%'
+        port: '%t3g.ldap.config.ldap_port%'
+        encryption: '%t3g.ldap.config.ldap_encryption%'
+        options:
+          protocol_version: '%t3g.ldap.config.ldap_version%'
+          referrals: false
+
+  # Our custom user provider to ldap.typo3.org
+  ldap.typo3.org.user.provider:
+    class: '%t3g.ldap.config.ldap_user_provider_class%'
+    arguments:
+      $ldap: '@Symfony\Component\Ldap\Ldap'
+      $baseDn: '%t3g.ldap.config.ldap_base_dn%'
+      $searchDn: '%t3g.ldap.config.ldap_search_user%'
+      $searchPassword: '%t3g.ldap.config.ldap_search_password%'
+      $defaultRoles: '%t3g.ldap.config.ldap_default_roles%'
+      $roleMapping: '%t3g.ldap.config.ldap_role_mapping%'
+      $uidKey: 'uid'
+
+  T3G\Bundle\LdapBundle\Service\LdapService:
+    class: T3G\Bundle\LdapBundle\Service\LdapService
+    public: true
+    arguments:
+      $ldap: '@Symfony\Component\Ldap\Ldap'
+      $baseDn: '%t3g.ldap.config.ldap_base_dn%'
+      $searchDn: '%t3g.ldap.config.ldap_search_user%'
+      $searchPassword: '%t3g.ldap.config.ldap_search_password%'
+
+  T3G\Bundle\LdapBundle\Security\AuthenticationSuccessHandler:
+    class: T3G\Bundle\LdapBundle\Security\AuthenticationSuccessHandler
