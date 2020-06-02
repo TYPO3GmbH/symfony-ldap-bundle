@@ -1,5 +1,5 @@
 <?php
-declare(strict_types=1);
+declare(strict_types = 1);
 
 /*
  * This file is part of the package t3g/symfony-ldap-bundle.
@@ -78,5 +78,41 @@ class LdapService
         }
 
         return $entries[0];
+    }
+
+    /**
+     * Returns a generator with users batches
+     * Every yield contains x number of users for memory optimized handling in a for each
+     *
+     * @return \Generator
+     */
+    public function findAll(): \Generator
+    {
+        $characters = array_merge(
+            range('0', '9'),
+            range('a', 'z'),
+            ['!', '-']
+        );
+        $this->ldap->bind($this->searchDn, $this->searchPassword);
+        // TYPO3 LDAP has a hard query result limit of 500.
+        // Therefore we need to do a search query per character
+        foreach ($characters as $character) {
+            $all = [];
+            $search = $this->ldap->query($this->baseDn, sprintf('(uid=%s*)', $character), ['pageSize' => 100, 'sizeLimit' => 100, 'maxItems' => 500]);
+            $entries = $search->execute();
+            // In case there are more than 500 results with this starting character
+            // Do searches for this character followed by each subsequent character again
+            if (count($entries) === 500) {
+                foreach ($characters as $secondCharacter) {
+                    $search = $this->ldap->query($this->baseDn, sprintf('(uid=%s%s*)', $character, $secondCharacter), ['pageSize' => 100, 'sizeLimit' => 100, 'maxItems' => 500]);
+                    $entries = $search->execute();
+                    $all = array_merge($all, $entries->toArray());
+                }
+            } else {
+                $all = array_merge($all, $entries->toArray());
+            }
+            yield $all;
+        }
+        yield [];
     }
 }
